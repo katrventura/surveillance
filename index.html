@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NYC Covid Case Rate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="NYC Covid Case Rate">
+    <meta property="og:description" content="A map of the 7-day rate of COVID-19 cases in each neighborhood of New York City.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="cover.png">
+
+
+
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 20px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        margin: 10px;
+      }
+
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        background: black;
+        width: 300px;
+        margin-left: 40px;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        overflow: auto;
+        border-radius: 3px;
+        color: white;
+        margin-top: 40px;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      #features {
+        left: 0;
+        height: 200px;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+        /* width: 300px; */
+        top: 0;
+        padding-left: 30px;
+        padding-top: 30px;
+        
+        
+      }
+
+      #legend {
+        padding: 10px;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+        line-height: 18px;
+        height: 100px;
+        bottom: 0;
+        /* margin-right: 20px; */
+        width: 100px;
+      }
+
+      .legend-key {
+        display: inline-block;
+        border-radius: 20%;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+      }
+
+      .geocoder {
+        position: absolute;
+        /* z-index: 1;
+        width: 50%;
+        /* left: 50%; */
+        /* margin-left: 25%;
+        top: 10px; */
+    
+    }
+  .mapboxgl-ctrl-geocoder {
+        /* min-width: 100%; */
+     
+    }
+
+  /* Media query for smaller screens */
+@media screen and (max-width: 600px) {
+    .map-overlay {
+        width: 70%;
+        max-width: none;
+        left: 5%;
+        right: 5%;
+    }
+
+    #legend {
+        top: auto;
+        bottom: 10px;
+    }
+}
+    </style>
+
+  </head>
+  <body>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+
+    <div id="map"></div>
+    <div class="map-overlay" id="features">
+        <h2>NYC Covid Case Rate</h2>
+        <div id="geocoder" class="geocoder"></div>
+        <br>
+        <br>
+        <br>
+        <div id="pd"><p>Hover over a neighborhood.</p></div>
+      </div>
+      <div class="map-overlay" id="legend"></div>
+
+    <script>
+             // map
+             mapboxgl.accessToken = 'pk.eyJ1Ijoia2F0cnZlbnR1cmEiLCJhIjoiY2xxMWI0cjlvMDZuMzJscDhhM3BtY2N0dSJ9.dTtqEKvt8CvYy0REikMh1w';
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/katrventura/clypzt8m8028101nzhvzi0gpr',
+            center: [-74.0060, 40.7128],
+            zoom: 10
+        });
+
+        // Add the control to the map.
+        const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+        container: 'geocoder',
+        placeholder: 'Search a neighborhood',
+    });
+
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+
+    map.on('load', () => {
+    // make a pointer cursor
+    map.getCanvas().style.cursor = 'default';
+
+    // Add UHF data source
+    map.addSource('uhf', {
+        type: 'geojson',
+        data: 'data/covid_data.geojson'
+    });
+
+    // Add UHF layer
+    map.addLayer({
+        id: 'uhf',
+        type: 'fill',
+        source: 'uhf',
+        paint: {
+            'fill-color': [
+                'interpolate',
+                ['linear'],
+                ['get', 'case_rate_7day'],
+                0, '#fce2e5',
+                20, '#fcbec3',
+                40, '#f9999d',
+                60, '#f07373',
+                80, '#e4474a'
+            ],
+            'fill-opacity': 0.7
+        }
+    });
+
+    // define layer names
+    const layers = [
+        '0-20',
+        '20-40',
+        '40-60',
+        '60-80',
+        '80-100',
+    ];
+    const colors = [
+        '#fce2e5',
+        '#fcbec3',
+        '#f9999d',
+        '#f07373',
+        '#e4474a'
+    ];
+
+    // create legend
+    const legend = document.getElementById('legend');
+
+    layers.forEach((layer, i) => {
+        const color = colors[i];
+        const item = document.createElement('div');
+        const key = document.createElement('span');
+        key.className = 'legend-key';
+        key.style.backgroundColor = color;
+
+        const value = document.createElement('span');
+        value.innerHTML = `${layer}`;
+        item.appendChild(key);
+        item.appendChild(value);
+        legend.appendChild(item);
+    });
+
+    // change info window on hover
+    map.on('mousemove', 'uhf', (event) => {
+        map.getCanvas().style.cursor = 'pointer';
+        const features = map.queryRenderedFeatures(event.point, {
+            layers: ['uhf']
+        });
+
+        if (features.length > 0) {
+            const feature = features[0];
+            const neighborhood = feature.properties.neighborhood_name;
+            const case_rate = feature.properties.case_rate_7day;
+
+            document.getElementById('pd').innerHTML = `
+                <h3>${neighborhood}</h3>
+                <p><strong>${case_rate}</strong> rate of confirmed cases per 100,000 people</p>
+            `;
+
+            popup.setLngLat(event.lngLat)
+                .setHTML(`
+                    <strong>${neighborhood}</strong><br>
+                    Case Rate: ${case_rate}
+                `)
+                .addTo(map);
+        } else {
+            document.getElementById('pd').innerHTML = `<p>Hover over a neighborhood!</p>`;
+            popup.remove();
+        }
+    });
+
+    map.on('mouseleave', 'uhf', () => {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+        document.getElementById('pd').innerHTML = `<p>Hover over a neighborhood!</p>`;
+    });
+});
+    </script>
+
+  </body>
+</html>
