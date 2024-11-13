@@ -27,6 +27,7 @@
 
       p {
         margin: 10px;
+        
       }
 
       .map-overlay {
@@ -35,11 +36,12 @@
         background: rgba(95, 113, 180, 0.717);
         width: 300px;
         margin-left: 40px;
-        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-family: Arial, Helvetica, sans-serif;
         overflow: auto;
         border-radius: 3px;
         color: white;
         margin-top: 40px;
+        text-align: left;
       }
 
       #map {
@@ -51,46 +53,66 @@
 
       #features {
         left: 0;
-        height: 200px;
+        height: 500px;
         box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
         /* width: 300px; */
         top: 0;
-        padding-left: 30px;
+        padding-left: 10px;
         padding-top: 30px;
+        text-align: center;
         
         
-      }
-
-      #legend {
-        padding: 10px;
-        box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-        line-height: 18px;
-        height: 100px;
-        bottom: 0;
-        /* margin-right: 20px; */
-        width: 100px;
-      }
-
-      .legend-key {
-        display: inline-block;
-        border-radius: 20%;
-        width: 10px;
-        height: 10px;
-        margin-right: 5px;
       }
 
       .geocoder {
-        position: absolute;
-        /* z-index: 1;
-        width: 50%;
-        /* left: 50%; */
-        /* margin-left: 25%;
-        top: 10px; */
-    
+        /* position: absolute; */
+        width: 90%;       /* Set width of the geocoder */
+        max-width: 250px; /* Limit max width */
+        margin: 0 auto;   /* Center the geocoder horizontally */
+        margin-bottom: 10px; 
     }
-  .mapboxgl-ctrl-geocoder {
-        /* min-width: 100%; */
-     
+
+
+    .button-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        justify-items: center;
+        margin: 0 auto;
+    }
+
+    .feature-button {
+        background: none;
+        border: none;
+        color: black;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 5px;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-button img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 5px;
+    }
+
+    .feature-button span {
+        color: black;
+    }
+
+    .feature-button.selected {
+        background-color: #cfd7ed;  /* Highlight color */
+        color: white;               /* Change text color if needed */
+        border-radius: 5px;
     }
 
   /* Media query for smaller screens */
@@ -117,88 +139,118 @@
 
     <div id="map"></div>
     <div class="map-overlay" id="features">
-        <h2>Check your neighborhood</h2>
+        <h2>Find Out Who's Watching</h2>
         <div id="geocoder" class="geocoder"></div>
-        <br>
-        <br>
-        <br>
-        <button id="licensePlateToggle">Show license plate</button>
-        <button id="cctvToggle">Show CCTV</button>
-        <button id="planeToggle">Show spy plane</button>
-        <button id="shotspotterToggle">Show shotspotter</button>
-        <button id="stingrayToggle">Show stingray</button>
-
+        <p>Click on the buttons below to view different types of surveillance in Baltimore.</p>
+        <div class="button-grid">
+            <button id="licensePlateToggle" class="feature-button">
+                <img src="assets/license-plate.png" alt="License Plate" />
+                <span>LICENSE PLATE</span>
+            </button>
+            <button id="cctvToggle" class="feature-button">
+                <img src="assets/cctv2.png" alt="CCTV" />
+                <span>CCTV</span>
+            </button>
+            <button id="planeToggle" class="feature-button">
+                <img src="assets/plane.png" alt="Spy Plane" />
+                <span>SPY PLANE</span>
+            </button>
+            <button id="shotspotterToggle" class="feature-button">
+                <img src="assets/shotspotter.png" alt="Shotspotter" />
+                <span>SHOTSPOTTER</span>
+            </button>
+            <button id="stingrayToggle" class="feature-button">
+                <img src="assets/stingray.png" alt="Stingray" />
+                <span>STINGRAY</span>
+            </button>
+            <button id="resetViewButton" class="feature-button">
+                <img src="assets/reset.png" alt="Reset View" />
+            </button>
+        </div>
+        
     </div>
-   
 
     <script>
-    // map
-             mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmxpdHRsZSIsImEiOiJjbHhjN3Q3aGwwMDJ0MmpvbzUyMzdoc2lkIn0.esK-vXAPC8mP0teJo9Vn6g';
 
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/ryanlittle/cm3dbxi6o002801pa6nqce30v',
-            center: [-76.619, 39.292],
-            zoom: 10
-        });
+// Define default center and zoom level
+const defaultCenter = [-76.619, 39.292];
+const defaultZoom = 11;
+const marylandBounds = [[-79.4877, 37.8855], [-75.0489, 39.723]];
 
-    // geocoder
-        const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        container: 'geocoder',
-        placeholder: 'Search a neighborhood',
+// Initialize the map
+mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmxpdHRsZSIsImEiOiJjbHhjN3Q3aGwwMDJ0MmpvbzUyMzdoc2lkIn0.esK-vXAPC8mP0teJo9Vn6g';
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/ryanlittle/cm3dbxi6o002801pa6nqce30v',
+    center: defaultCenter,
+    zoom: defaultZoom,
+    maxBounds: marylandBounds
+});
+
+// Add geocoder
+const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    placeholder: 'Type an address',
+    bbox: [...marylandBounds[0], ...marylandBounds[1]]
+});
+
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+// Event listener for geocoder result to zoom into the selected location
+geocoder.on('result', function(e) {
+    map.flyTo({
+        center: e.result.center,
+        zoom: 14  // Adjust zoom level as needed when searching an address
     });
+});
 
-    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+// Reset View button functionality
+document.getElementById('resetViewButton').addEventListener('click', function() {
+    map.flyTo({
+        center: defaultCenter,
+        zoom: defaultZoom
+    });
+});
 
 
-    // load layers
-
-
-    // license plate
-     map.on('load', function () {
+map.on('load', function () {
+    // Add the license plate source once on load
     map.addSource('license-plate', {
         type: 'vector',
         url: 'mapbox://ryanlittle.c49km02y'
     });
     
+    // Load the license plate icon image, but do not add the layer yet
     map.loadImage('assets/license-plate.png', function(error, image) {
         if (error) throw error;
         map.addImage('license-plate', image);
     });
 });
 
-     document.getElementById('licensePlateToggle').addEventListener('click', function() {
-        const layerId = 'license-plate';
+document.getElementById('licensePlateToggle').addEventListener('click', function() {
+    const layerId = 'license-plate';
 
-        if (map.getLayer(layerId)) {
-            map.removeLayer(layerId);
-            map.removeSource('license-plate');
-            this.innerText = 'Show license plate';
-        } else {
-            map.addSource('license-plate', {
-                type: 'vector',
-                url: 'mapbox://ryanlittle.c49km02y'
-            });
-            map.addLayer({
-                id: layerId,
-                type: 'symbol',
-                source: 'license-plate',
-                'source-layer': 'baltimore-surveillance-data-l-8yykvz',
-                layout: {
-                    'icon-image': 'license-plate',
-                    'icon-size': 0.08,
-                    'icon-allow-overlap': true
-                }
-            });
-            this.innerText = 'Hide license plate';
-        }
-    });
-
-
-    // CitiWatch_Camera_Locations-6ylw5f
-    // ryanlittle.05paul59
+    if (map.getLayer(layerId)) {
+        // If the layer exists, remove it and remove the selected class
+        map.removeLayer(layerId);
+        this.classList.remove('selected');
+    } else {
+        // If the layer does not exist, add it and add the selected class
+        map.addLayer({
+            id: layerId,
+            type: 'symbol',
+            source: 'license-plate', // Use the pre-existing source
+            'source-layer': 'baltimore-surveillance-data-l-8yykvz',
+            layout: {
+                'icon-image': 'license-plate',
+                'icon-size': 0.08,
+                'icon-allow-overlap': true
+            }
+        });
+        this.classList.add('selected');
+    }
+});
 
 
     map.on('load', function () {
@@ -215,14 +267,13 @@
     });
 });
 
-// Toggle button functionality to show/hide the layer
 document.getElementById('cctvToggle').addEventListener('click', function() {
     const layerId = 'cctv';
 
     if (map.getLayer(layerId)) {
         // Remove the layer (but not the source)
         map.removeLayer(layerId);
-        this.innerText = 'Show CCTV';
+        this.classList.remove('selected');
     } else {
         // Add the layer if it doesn't exist
         map.addLayer({
@@ -236,13 +287,10 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
                 'icon-allow-overlap': true
             }
         });
-        this.innerText = 'Hide CCTV';
+        this.classList.add('selected');
     }
 });
 
-
-// Spy-Plane-Investigations_data-bdfrq8
-// ryanlittle.c0r1pyg9
 
     map.on('load', function () {
     // Add UHF data source
@@ -262,7 +310,7 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
 
         if (map.getLayer(layerId)) {
             map.removeLayer(layerId);
-            this.innerText = 'Show plane';
+            this.classList.remove('selected');
         } else {
             map.addLayer({
                 id: layerId,
@@ -275,9 +323,9 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
                     'icon-allow-overlap': true
                 }
             });
-            this.innerText = 'Hide plane';
+            this.classList.add('selected');
         }
-    });
+});
 
 
     map.on('load', function () {
@@ -298,7 +346,7 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
 
         if (map.getLayer(layerId)) {
             map.removeLayer(layerId);
-            this.innerText = 'Show shotspotter';
+            this.classList.remove('selected');
         } else {
             map.addLayer({
                 id: layerId,
@@ -311,14 +359,9 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
                     'icon-allow-overlap': true
                 }
             });
-            this.innerText = 'Hide shotspotter';
+            this.classList.add('selected');
         }
-    });
-
-
-    // stingray
-    // stingray-7phuk2
-    // ryanlittle.9j4nkeey
+});
 
 
     map.on('load', function () {
@@ -332,14 +375,14 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
         if (error) throw error;
         map.addImage('stingray', image);
     });
-    });
+});
 
     document.getElementById('stingrayToggle').addEventListener('click', function() {
         const layerId = 'stingray';
 
         if (map.getLayer(layerId)) {
             map.removeLayer(layerId);
-            this.innerText = 'Show stingray';
+            this.classList.remove('selected');
         } else {
             map.addLayer({
                 id: layerId,
@@ -352,9 +395,9 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
                     'icon-allow-overlap': true
                 }
             });
-            this.innerText = 'Hide stingray';
+            this.classList.add('selected');
         }
-    });
+});
  
 </script>
 </body>
