@@ -119,6 +119,15 @@
     <div class="map-overlay" id="features">
         <h2>Check your neighborhood</h2>
         <div id="geocoder" class="geocoder"></div>
+        <br>
+        <br>
+        <br>
+        <button id="licensePlateToggle">Show license plate</button>
+        <button id="cctvToggle">Show CCTV</button>
+        <button id="planeToggle">Show spy plane</button>
+        <button id="shotspotterToggle">Show shotspotter</button>
+        <button id="stingrayToggle">Show stingray</button>
+
     </div>
    
 
@@ -133,7 +142,7 @@
             zoom: 10
         });
 
-        // Add the control to the map.
+    // geocoder
         const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         mapboxgl: mapboxgl,
@@ -143,59 +152,210 @@
 
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-    map.on('load', function () {
-    // Add UHF data source
-    map.addSource('uhf', {
+
+    // load layers
+
+
+    // license plate
+     map.on('load', function () {
+    map.addSource('license-plate', {
         type: 'vector',
         url: 'mapbox://ryanlittle.c49km02y'
     });
     
-    map.loadImage('assets/cctv.png', function(error, image) {
+    map.loadImage('assets/license-plate.png', function(error, image) {
         if (error) throw error;
-        map.addImage('cctv', image);
-    
-    map.addLayer({
-        id: 'uhf',
-        type: 'symbol',
-        source: 'uhf',
-        'source-layer': 'baltimore-surveillance-data-l-8yykvz',
-        layout: {
-            'icon-image': 'cctv',
-            'icon-size': 0.08,
-            'icon-allow-overlap': true
+        map.addImage('license-plate', image);
+    });
+});
+
+     document.getElementById('licensePlateToggle').addEventListener('click', function() {
+        const layerId = 'license-plate';
+
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            map.removeSource('license-plate');
+            this.innerText = 'Show license plate';
+        } else {
+            map.addSource('license-plate', {
+                type: 'vector',
+                url: 'mapbox://ryanlittle.c49km02y'
+            });
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'license-plate',
+                'source-layer': 'baltimore-surveillance-data-l-8yykvz',
+                layout: {
+                    'icon-image': 'license-plate',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.innerText = 'Hide license plate';
         }
     });
-    });
-    });
 
-    // map.on('load', function () {
-    // // Add UHF data source
-    // map.addSource('uhf', {
-    //     type: 'geojson',
-    //     url: 'data/baltimore-surveillance-data-license-plate.geojson'
-    // });
+
+    // CitiWatch_Camera_Locations-6ylw5f
+    // ryanlittle.05paul59
+
+
+    map.on('load', function () {
+    // Add the CCTV data source without adding the layer
+    map.addSource('cctv', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.05paul59'
+    });
     
-   
-    // map.loadImage('assets/cctv.png', function(error, image) {
-    //     if (error) throw error;
-    //     map.addImage('cctv', image);
-    // });
+    // Load the CCTV icon image, but do not add the layer yet
+    map.loadImage('assets/cctv2.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('cctv', image);
+    });
+});
 
-    // map.addLayer({
-    //     id: 'uhf',
-    //     type: 'symbol',
-    //     source: 'uhf',
-    //     layout: {
-    //         'icon-image': 'cctv',
-    //         'icon-size': 10,
-    //         'icon-allow-overlap': true
-    //     }
-    // });
-    // });
+// Toggle button functionality to show/hide the layer
+document.getElementById('cctvToggle').addEventListener('click', function() {
+    const layerId = 'cctv';
+
+    if (map.getLayer(layerId)) {
+        // Remove the layer (but not the source)
+        map.removeLayer(layerId);
+        this.innerText = 'Show CCTV';
+    } else {
+        // Add the layer if it doesn't exist
+        map.addLayer({
+            id: layerId,
+            type: 'symbol',
+            source: 'cctv',   // Use the existing source
+            'source-layer': 'CitiWatch_Camera_Locations-6ylw5f',
+            layout: {
+                'icon-image': 'cctv',
+                'icon-size': 0.08,
+                'icon-allow-overlap': true
+            }
+        });
+        this.innerText = 'Hide CCTV';
+    }
+});
 
 
+// Spy-Plane-Investigations_data-bdfrq8
+// ryanlittle.c0r1pyg9
+
+    map.on('load', function () {
+    // Add UHF data source
+    map.addSource('plane', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.c0r1pyg9'
+    });
+    
+    map.loadImage('assets/plane.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('plane', image);
+    });
+});
+
+    document.getElementById('planeToggle').addEventListener('click', function() {
+        const layerId = 'plane';
+
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            this.innerText = 'Show plane';
+        } else {
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'plane',
+                'source-layer': 'Spy-Plane-Investigations_data-bdfrq8',
+                layout: {
+                    'icon-image': 'plane',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.innerText = 'Hide plane';
+        }
+    });
 
 
+    map.on('load', function () {
+    // Add UHF data source
+    map.addSource('shotspotter', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.5e9i7e9p'
+    });
+    
+    map.loadImage('assets/shotspotter.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('shotspotter', image);
+    });
+});
+
+    document.getElementById('shotspotterToggle').addEventListener('click', function() {
+        const layerId = 'shotspotter';
+
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            this.innerText = 'Show shotspotter';
+        } else {
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'shotspotter',
+                'source-layer': 'baltimore-surveillance-data_--5tm7wq',
+                layout: {
+                    'icon-image': 'shotspotter',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.innerText = 'Hide shotspotter';
+        }
+    });
+
+
+    // stingray
+    // stingray-7phuk2
+    // ryanlittle.9j4nkeey
+
+
+    map.on('load', function () {
+    // Add UHF data source
+    map.addSource('stingray', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.9j4nkeey'
+    });
+    
+    map.loadImage('assets/stingray.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('stingray', image);
+    });
+    });
+
+    document.getElementById('stingrayToggle').addEventListener('click', function() {
+        const layerId = 'stingray';
+
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            this.innerText = 'Show stingray';
+        } else {
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'stingray',
+                'source-layer': 'stingray-7phuk2',
+                layout: {
+                    'icon-image': 'stingray',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.innerText = 'Hide stingray';
+        }
+    });
+ 
 </script>
 </body>
 </html>
