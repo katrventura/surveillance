@@ -27,6 +27,7 @@
 
       p {
         margin: 10px;
+        
       }
 
       .map-overlay {
@@ -35,11 +36,12 @@
         background: rgba(95, 113, 180, 0.717);
         width: 300px;
         margin-left: 40px;
-        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-family: Arial, Helvetica, sans-serif;
         overflow: auto;
         border-radius: 3px;
         color: white;
         margin-top: 40px;
+        text-align: left;
       }
 
       #map {
@@ -51,46 +53,66 @@
 
       #features {
         left: 0;
-        height: 200px;
+        height: 500px;
         box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
         /* width: 300px; */
         top: 0;
-        padding-left: 30px;
+        padding-left: 10px;
         padding-top: 30px;
+        text-align: center;
         
         
-      }
-
-      #legend {
-        padding: 10px;
-        box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-        line-height: 18px;
-        height: 100px;
-        bottom: 0;
-        /* margin-right: 20px; */
-        width: 100px;
-      }
-
-      .legend-key {
-        display: inline-block;
-        border-radius: 20%;
-        width: 10px;
-        height: 10px;
-        margin-right: 5px;
       }
 
       .geocoder {
-        position: absolute;
-        /* z-index: 1;
-        width: 50%;
-        /* left: 50%; */
-        /* margin-left: 25%;
-        top: 10px; */
-    
+        /* position: absolute; */
+        width: 90%;       /* Set width of the geocoder */
+        max-width: 250px; /* Limit max width */
+        margin: 0 auto;   /* Center the geocoder horizontally */
+        margin-bottom: 10px; 
     }
-  .mapboxgl-ctrl-geocoder {
-        /* min-width: 100%; */
-     
+
+
+    .button-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        justify-items: center;
+        margin: 0 auto;
+    }
+
+    .feature-button {
+        background: none;
+        border: none;
+        color: black;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 5px;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-button img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 5px;
+    }
+
+    .feature-button span {
+        color: black;
+    }
+
+    .feature-button.selected {
+        background-color: #cfd7ed;  /* Highlight color */
+        color: white;               /* Change text color if needed */
+        border-radius: 5px;
     }
 
   /* Media query for smaller screens */
@@ -117,161 +139,266 @@
 
     <div id="map"></div>
     <div class="map-overlay" id="features">
-        <h2>Check your neighborhood</h2>
+        <h2>Find Out Who's Watching</h2>
         <div id="geocoder" class="geocoder"></div>
-        <!-- <br>
-        <br>
-        <br>
-        <div id="pd"><p>Hover over a neighborhood.</p></div> -->
-      </div>
-      <!-- <div class="map-overlay" id="legend"></div> -->
+        <p>Click on the buttons below to view different types of surveillance in Baltimore.</p>
+        <div class="button-grid">
+            <button id="licensePlateToggle" class="feature-button">
+                <img src="assets/license-plate.png" alt="License Plate" />
+                <span>LICENSE PLATE</span>
+            </button>
+            <button id="cctvToggle" class="feature-button">
+                <img src="assets/cctv2.png" alt="CCTV" />
+                <span>CCTV</span>
+            </button>
+            <button id="planeToggle" class="feature-button">
+                <img src="assets/plane.png" alt="Spy Plane" />
+                <span>SPY PLANE</span>
+            </button>
+            <button id="shotspotterToggle" class="feature-button">
+                <img src="assets/shotspotter.png" alt="Shotspotter" />
+                <span>SHOTSPOTTER</span>
+            </button>
+            <button id="stingrayToggle" class="feature-button">
+                <img src="assets/stingray.png" alt="Stingray" />
+                <span>STINGRAY</span>
+            </button>
+            <button id="resetViewButton" class="feature-button">
+                <img src="assets/reset.png" alt="Reset View" />
+            </button>
+        </div>
+        
+    </div>
 
     <script>
-             // map
-             mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmxpdHRsZSIsImEiOiJjbGFiODV2dmcwMWlmM25wcXlrYzlwdzJzIn0.Tc5W4hPge3Q-Ql8EzRzTMw';
 
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/ryanlittle/cm3dbxi6o002801pa6nqce30v',
-            center: [-76.619, 39.292],
-            zoom: 10
+// Define default center and zoom level
+const defaultCenter = [-76.619, 39.292];
+const defaultZoom = 11;
+const marylandBounds = [[-79.4877, 37.8855], [-75.0489, 39.723]];
+
+// Initialize the map
+mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmxpdHRsZSIsImEiOiJjbHhjN3Q3aGwwMDJ0MmpvbzUyMzdoc2lkIn0.esK-vXAPC8mP0teJo9Vn6g';
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/ryanlittle/cm3dbxi6o002801pa6nqce30v',
+    center: defaultCenter,
+    zoom: defaultZoom,
+    maxBounds: marylandBounds
+});
+
+// Add geocoder
+const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    placeholder: 'Type an address',
+    bbox: [...marylandBounds[0], ...marylandBounds[1]]
+});
+
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+// Event listener for geocoder result to zoom into the selected location
+geocoder.on('result', function(e) {
+    map.flyTo({
+        center: e.result.center,
+        zoom: 14  // Adjust zoom level as needed when searching an address
+    });
+});
+
+// Reset View button functionality
+document.getElementById('resetViewButton').addEventListener('click', function() {
+    map.flyTo({
+        center: defaultCenter,
+        zoom: defaultZoom
+    });
+});
+
+
+map.on('load', function () {
+    // Add the license plate source once on load
+    map.addSource('license-plate', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.c49km02y'
+    });
+    
+    // Load the license plate icon image, but do not add the layer yet
+    map.loadImage('assets/license-plate.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('license-plate', image);
+    });
+});
+
+document.getElementById('licensePlateToggle').addEventListener('click', function() {
+    const layerId = 'license-plate';
+
+    if (map.getLayer(layerId)) {
+        // If the layer exists, remove it and remove the selected class
+        map.removeLayer(layerId);
+        this.classList.remove('selected');
+    } else {
+        // If the layer does not exist, add it and add the selected class
+        map.addLayer({
+            id: layerId,
+            type: 'symbol',
+            source: 'license-plate', // Use the pre-existing source
+            'source-layer': 'baltimore-surveillance-data-l-8yykvz',
+            layout: {
+                'icon-image': 'license-plate',
+                'icon-size': 0.08,
+                'icon-allow-overlap': true
+            }
         });
+        this.classList.add('selected');
+    }
+});
 
-        // Add the control to the map.
-        const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        container: 'geocoder',
-        placeholder: 'Search a neighborhood',
+
+    map.on('load', function () {
+    // Add the CCTV data source without adding the layer
+    map.addSource('cctv', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.05paul59'
     });
-
-    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-    // Add UHF data source
-    map.addSource('uhf', {
-        type: 'geojson',
-        url: 'data/baltimore-surveillance-data-cctv.geojson'
-    });
-   
-    map.loadImage('assets/cctv.png', function(error, image) {
+    
+    // Load the CCTV icon image, but do not add the layer yet
+    map.loadImage('assets/cctv2.png', function(error, image) {
         if (error) throw error;
         map.addImage('cctv', image);
     });
+});
 
-    map.addLayer({
-        id: 'uhf',
-        type: 'symbol',
-        source: 'uhf',
-        layout: {
-            'icon-image': 'cctv',
-            'icon-size': 10,
-            'icon-allow-overlap': true
-        }
+document.getElementById('cctvToggle').addEventListener('click', function() {
+    const layerId = 'cctv';
+
+    if (map.getLayer(layerId)) {
+        // Remove the layer (but not the source)
+        map.removeLayer(layerId);
+        this.classList.remove('selected');
+    } else {
+        // Add the layer if it doesn't exist
+        map.addLayer({
+            id: layerId,
+            type: 'symbol',
+            source: 'cctv',   // Use the existing source
+            'source-layer': 'CitiWatch_Camera_Locations-6ylw5f',
+            layout: {
+                'icon-image': 'cctv',
+                'icon-size': 0.08,
+                'icon-allow-overlap': true
+            }
+        });
+        this.classList.add('selected');
+    }
+});
+
+
+    map.on('load', function () {
+    // Add UHF data source
+    map.addSource('plane', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.c0r1pyg9'
     });
+    
+    map.loadImage('assets/plane.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('plane', image);
+    });
+});
+
+    document.getElementById('planeToggle').addEventListener('click', function() {
+        const layerId = 'plane';
+
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            this.classList.remove('selected');
+        } else {
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'plane',
+                'source-layer': 'Spy-Plane-Investigations_data-bdfrq8',
+                layout: {
+                    'icon-image': 'plane',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.classList.add('selected');
+        }
+});
 
 
+    map.on('load', function () {
+    // Add UHF data source
+    map.addSource('shotspotter', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.5e9i7e9p'
+    });
+    
+    map.loadImage('assets/shotspotter.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('shotspotter', image);
+    });
+});
+
+    document.getElementById('shotspotterToggle').addEventListener('click', function() {
+        const layerId = 'shotspotter';
+
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            this.classList.remove('selected');
+        } else {
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'shotspotter',
+                'source-layer': 'baltimore-surveillance-data_--5tm7wq',
+                layout: {
+                    'icon-image': 'shotspotter',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.classList.add('selected');
+        }
+});
 
 
+    map.on('load', function () {
+    // Add UHF data source
+    map.addSource('stingray', {
+        type: 'vector',
+        url: 'mapbox://ryanlittle.9j4nkeey'
+    });
+    
+    map.loadImage('assets/stingray.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('stingray', image);
+    });
+});
 
-//     map.on('load', () => {
-//     // make a pointer cursor
-//     map.getCanvas().style.cursor = 'default';
+    document.getElementById('stingrayToggle').addEventListener('click', function() {
+        const layerId = 'stingray';
 
-//     // Add UHF data source
-//     map.addSource('uhf', {
-//         type: 'geojson',
-//         data: 'data/covid_data.geojson'
-//     });
-
-//     // Add UHF layer
-//     map.addLayer({
-//         id: 'uhf',
-//         type: 'fill',
-//         source: 'uhf',
-//         paint: {
-//             'fill-color': [
-//                 'interpolate',
-//                 ['linear'],
-//                 ['get', 'case_rate_7day'],
-//                 0, '#fce2e5',
-//                 20, '#fcbec3',
-//                 40, '#f9999d',
-//                 60, '#f07373',
-//                 80, '#e4474a'
-//             ],
-//             'fill-opacity': 0.7
-//         }
-//     });
-
-//     // define layer names
-//     const layers = [
-//         '0-20',
-//         '20-40',
-//         '40-60',
-//         '60-80',
-//         '80-100',
-//     ];
-//     const colors = [
-//         '#fce2e5',
-//         '#fcbec3',
-//         '#f9999d',
-//         '#f07373',
-//         '#e4474a'
-//     ];
-
-//     // create legend
-//     const legend = document.getElementById('legend');
-
-//     layers.forEach((layer, i) => {
-//         const color = colors[i];
-//         const item = document.createElement('div');
-//         const key = document.createElement('span');
-//         key.className = 'legend-key';
-//         key.style.backgroundColor = color;
-
-//         const value = document.createElement('span');
-//         value.innerHTML = `${layer}`;
-//         item.appendChild(key);
-//         item.appendChild(value);
-//         legend.appendChild(item);
-//     });
-
-//     // change info window on hover
-//     map.on('mousemove', 'uhf', (event) => {
-//         map.getCanvas().style.cursor = 'pointer';
-//         const features = map.queryRenderedFeatures(event.point, {
-//             layers: ['uhf']
-//         });
-
-//         if (features.length > 0) {
-//             const feature = features[0];
-//             const neighborhood = feature.properties.neighborhood_name;
-//             const case_rate = feature.properties.case_rate_7day;
-
-//             document.getElementById('pd').innerHTML = `
-//                 <h3>${neighborhood}</h3>
-//                 <p><strong>${case_rate}</strong> rate of confirmed cases per 100,000 people</p>
-//             `;
-
-//             popup.setLngLat(event.lngLat)
-//                 .setHTML(`
-//                     <strong>${neighborhood}</strong><br>
-//                     Case Rate: ${case_rate}
-//                 `)
-//                 .addTo(map);
-//         } else {
-//             document.getElementById('pd').innerHTML = `<p>Hover over a neighborhood!</p>`;
-//             popup.remove();
-//         }
-//     });
-
-//     map.on('mouseleave', 'uhf', () => {
-//         map.getCanvas().style.cursor = '';
-//         popup.remove();
-//         document.getElementById('pd').innerHTML = `<p>Hover over a neighborhood!</p>`;
-//     });
-// });
-    </script>
-
-  </body>
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+            this.classList.remove('selected');
+        } else {
+            map.addLayer({
+                id: layerId,
+                type: 'symbol',
+                source: 'stingray',
+                'source-layer': 'stingray-7phuk2',
+                layout: {
+                    'icon-image': 'stingray',
+                    'icon-size': 0.08,
+                    'icon-allow-overlap': true
+                }
+            });
+            this.classList.add('selected');
+        }
+});
+ 
+</script>
+</body>
 </html>
