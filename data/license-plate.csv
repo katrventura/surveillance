@@ -1,0 +1,33 @@
+police-department,address,state,Latitude,Longitude,direction,north,south,east,west,cameras,district,post
+BPD Monroe and Edmondson,N Monroe St & Edmondson Ave,"Baltimore, MD 21223",39.29536162,-76.64732044,SB,FALSE,TRUE,FALSE,FALSE,2,Western ,722
+BPD Belvedere and Park Heights,W Belvedere Ave & Park Heights Ave,"Baltimore, MD 21215",39.35002101,-76.67585816,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Northwestern,633
+BPD York and Woodbourne,Woodbourne Ave & York Rd,"Baltimore, MD 21212",39.35586148,-76.60986401,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Northern,523
+BPD Belair and Lake,Lake Ave & Belair Rd,"Baltimore, MD 21218",39.32332617,-76.57244325,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Northeastern,432
+BPD Horseshoe Casino Bayard at Warner,"1632 Warner St Parking, Baltimore","Baltimore, MD 21230",39.27272391,-76.62725598,<Null>,FALSE,FALSE,FALSE,FALSE,4,Southern,941
+BPD Horseshoe Casino Valet,"1525 Russell St, Baltimore, MD 21230","Baltimore, MD 21230",39.27367956,-76.62736764,<Null>,FALSE,FALSE,FALSE,FALSE,2,Southern,941
+BPD Horseshoe Casino Worcester at Warner,"1633 Warner St, Baltimore","Baltimore, MD 21230",39.27430694,-76.62747949,<Null>,FALSE,FALSE,FALSE,FALSE,3,Southern,941
+BPD Baltimore and Calvert,E Baltimore St & S Calvert St,"Baltimore, MD 21202",39.29544913,-76.61280049,EB,FALSE,FALSE,TRUE,FALSE,3,Central,111
+BPD North and Pennsylvania,W North Ave & Pennsylvania Ave,"Baltimore, MD 21217",39.31099182,-76.64269956,WB,FALSE,FALSE,FALSE,TRUE,2,Western ,733
+BPD Gilmore and Baltimore,W Baltimore St & N Gilmor St,"Baltimore, MD 21218",39.28862648,-76.64238675,EB/ WB,FALSE,FALSE,TRUE,TRUE,2,Western ,711
+E Baltimore St and S Highland Ave,E Baltimore St & S Highland Ave,"Baltimore, MD 21224",39.29466311,-76.56941099,EB/ WB/ NB/ SB,TRUE,TRUE,TRUE,TRUE,4,Southeastern,223
+E Baltimore St and N Washington St,E Baltimore St & N Washington St,"Baltimore, MD 21231",39.29239187,-76.58921788,NB/ EB/ WB,TRUE,FALSE,TRUE,TRUE,3,Southeastern,212
+Edmondson Ave and Mount Holly St,Mt Holly St & Edmondson Ave,"Baltimore, MD 21229",39.29513444,-76.67959659,EB/ WB,FALSE,FALSE,TRUE,TRUE,4,Southeastern,815
+Harford Rd and E 25th Street,E 25th St & Harford Rd,"Baltimore, MD 21213",39.31748298,-76.59549037,NB/ SB,TRUE,TRUE,FALSE,FALSE,3,Eastern,314
+Liberty Heights Ave and Gwynn Oak Ave,Gwynn Oak Ave & Liberty Heights Ave,"Baltimore, MD 21207",39.33178404,-76.69561405,EB/ WB,FALSE,FALSE,TRUE,TRUE,2,Northwestern,622
+E 33rd St and Loch Raven Blvd,Loch Raven Blvd & E 33rd St,"Baltimore, MD 21218",39.32870368,-76.59787951,NB/ SB/ EB/ WB,TRUE,TRUE,TRUE,TRUE,4,Northwestern,411
+W Fayette St and N Fulton Ave,W Fayette St & N Fulton Ave,"Baltimore, MD 21223",39.28968567,-76.64528809,NB,TRUE,FALSE,FALSE,FALSE,2,Western ,711
+E North Ave and N Wolfe St,E North Ave & N Wolfe St,"Baltimore, MD 21213",39.31244672,-76.59169042,EB/ WB,FALSE,FALSE,TRUE,TRUE,4,Eastern,331
+E Patapsco Ave and S Hanover St,E Patapsco Ave & S Hanover St,"Baltimore, MD 21225",39.23866475,-76.60953734,NB/ EB/ WB,TRUE,FALSE,TRUE,TRUE,3,Southern,913
+Poplar Grove Street and W Lafayette Ave,W Lafayette Ave & Poplar Grove St,"Baltimore, MD 21216",39.30057006,-76.66451718,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Southwestern,814
+N Conkling St and Pulaski Hwy,N Conkling St & U.S. Hwy 40,"Baltimore, MD 21224",39.29829665,-76.56753741,EB/ WB /SB,FALSE,TRUE,TRUE,TRUE,5,Southeastern,223
+Reisterstown Rd and W Garrison Ave,W Garrison Ave & Reisterstown Rd,"Baltimore, MD 21215",39.34352965,-76.68255111,EB/ WB,FALSE,FALSE,TRUE,TRUE,2,Northwestern,613
+W Franklin St and N Payson St,N Payson St & W Franklin St,"Baltimore, MD 21223",39.29396894,-76.64893824,WB,FALSE,FALSE,FALSE,TRUE,2,Western ,722
+N Monroe St and W Lafayette Ave,N Monroe St & W Lafayette Ave,"Baltimore, MD 21217",39.29963693,-76.64747561,EB/ WB,FALSE,FALSE,TRUE,TRUE,2,Western ,722
+W Mulbery St and N Payson St,W Mulberry St & N Payson St,"Baltimore, MD 21223",39.29300059,-76.64898042,EB,FALSE,FALSE,TRUE,FALSE,2,Western ,835
+W North Ave at McCulloh St,W North Ave & McCulloh St,"Baltimore, MD 21217",39.31038629,-76.63694036,EB/ NB,TRUE,FALSE,TRUE,FALSE,3,Central,133
+Wilkins Ave and S Catherine St,S Catherine St & Wilkens Ave,"Baltimore, MD 21223",39.28006339,-76.65352186,EB/ WB,FALSE,FALSE,TRUE,TRUE,2,Southwestern,834
+Frederick Ave and S Catherine St,S Catherine St & Frederick Ave,"Baltimore, MD 21223",39.28363389,-76.65591607,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Southwestern,835
+Biddle St and Greenmount Ave,E Biddle St & Greenmount Ave,"Baltimore, MD 21202",39.30427222,-76.60798277,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Eastern,313
+W Northern Parkway at Reistertown Road,W Northern Pkwy & Reisterstown Rd,"Baltimore, MD 21215",39.34897233,-76.69185322,WB/ EB/ NB/ SB,TRUE,TRUE,TRUE,TRUE,9,Northwestern,632
+Harford Road at Echodale Avenue,Harford Rd & Echodale Ave,"Baltimore, MD 21214",39.35065196,-76.56334987,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Northeastern,423
+North Hilton Street at North Kossuth Street,N Kossuth St & N Hilton St,"Baltimore, MD 21229",39.28929857,-76.67255419,NB/ SB,TRUE,TRUE,FALSE,FALSE,2,Southwestern,835

@@ -166,8 +166,7 @@
             <button id="resetViewButton" class="feature-button">
                 <img src="assets/reset-light.png" alt="Reset View" />
             </button>
-        </div>
-        
+        </div>       
     </div>
 
     <script>
@@ -213,12 +212,14 @@ document.getElementById('resetViewButton').addEventListener('click', function() 
     });
 });
 
+// license-plate-chb69s
+// ryanlittle.cp2unh1o
 
 map.on('load', function () {
     // Add the license plate source once on load
     map.addSource('license-plate', {
         type: 'vector',
-        url: 'mapbox://ryanlittle.c49km02y'
+        url: 'mapbox://ryanlittle.cp2unh1o'
     });
     
     // Load the license plate icon image, but do not add the layer yet
@@ -241,7 +242,7 @@ document.getElementById('licensePlateToggle').addEventListener('click', function
             id: layerId,
             type: 'symbol',
             source: 'license-plate', // Use the pre-existing source
-            'source-layer': 'baltimore-surveillance-data-l-8yykvz',
+            'source-layer': 'license-plate-chb69s',
             layout: {
                 'icon-image': 'license-plate',
                 'icon-size': 0.08,
