@@ -33,7 +33,7 @@
       .map-overlay {
         position: absolute;
         bottom: 0;
-        background: rgba(93, 117, 126, 0.85);
+        background: rgba(95, 113, 180, 0.717);
         width: 300px;
         margin-left: 40px;
         font-family: Arial, Helvetica, sans-serif;
@@ -106,12 +106,12 @@
     }
 
     .feature-button span {
-        color: whitesmoke;
+        color: black;
     }
 
     .feature-button.selected {
-        background-color: rgb(60, 67, 78);  
-        color: white;               
+        background-color: #cfd7ed;  /* Highlight color */
+        color: white;               /* Change text color if needed */
         border-radius: 5px;
     }
 
@@ -139,32 +139,32 @@
 
     <div id="map"></div>
     <div class="map-overlay" id="features">
-        <h2>Find Out Who's Watching</h2>
+        <h2>Check Surveillance in Area</h2>
         <div id="geocoder" class="geocoder"></div>
-        <p>Click on the buttons below to see the location of each surveillance device.</p>
+        <p>Click on the buttons below to view different types of surveillance in Baltimore.</p>
         <div class="button-grid">
             <button id="licensePlateToggle" class="feature-button">
-                <img src="assets/license-plate-light.png" alt="License Plate" />
+                <img src="assets/license-plate.png" alt="License Plate" />
                 <span>LICENSE PLATE READERS</span>
             </button>
             <button id="cctvToggle" class="feature-button">
-                <img src="assets/cctv-light.png" alt="CCTV" />
+                <img src="assets/cctv2.png" alt="CCTV" />
                 <span>CRIME CAMERAS</span>
             </button>
             <button id="planeToggle" class="feature-button">
-                <img src="assets/plane-light.png" alt="Spy Plane" />
-                <span>SPY PLANS</span>
+                <img src="assets/plane.png" alt="Spy Plane" />
+                <span>SPY PLANES</span>
             </button>
             <button id="shotspotterToggle" class="feature-button">
-                <img src="assets/shotspotter-light.png" alt="Shotspotter" />
+                <img src="assets/shotspotter.png" alt="Shotspotter" />
                 <span>SHOT SPOTTERS</span>
             </button>
             <button id="stingrayToggle" class="feature-button">
-                <img src="assets/stingray-light.png" alt="Stingray" />
+                <img src="assets/stingray.png" alt="Stingray" />
                 <span>STINGRAY PHONE TRACKERS</span>
             </button>
             <button id="resetViewButton" class="feature-button">
-                <img src="assets/reset-light.png" alt="Reset View" />
+                <img src="assets/reset.png" alt="Reset View" />
             </button>
         </div>
         
@@ -181,7 +181,7 @@ const marylandBounds = [[-79.4877, 37.8855], [-75.0489, 39.723]];
 mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmxpdHRsZSIsImEiOiJjbHhjN3Q3aGwwMDJ0MmpvbzUyMzdoc2lkIn0.esK-vXAPC8mP0teJo9Vn6g';
 const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/ryanlittle/cm3gk9vn8008r01rv0fac432d',
+    style: 'mapbox://styles/ryanlittle/cm3dbxi6o002801pa6nqce30v',
     center: defaultCenter,
     zoom: defaultZoom,
     maxBounds: marylandBounds
@@ -222,7 +222,7 @@ map.on('load', function () {
     });
     
     // Load the license plate icon image, but do not add the layer yet
-    map.loadImage('assets/license-plate-light.png', function(error, image) {
+    map.loadImage('assets/license-plate.png', function(error, image) {
         if (error) throw error;
         map.addImage('license-plate', image);
     });
@@ -261,7 +261,7 @@ document.getElementById('licensePlateToggle').addEventListener('click', function
     });
     
     // Load the CCTV icon image, but do not add the layer yet
-    map.loadImage('assets/cctv-light.png', function(error, image) {
+    map.loadImage('assets/cctv2.png', function(error, image) {
         if (error) throw error;
         map.addImage('cctv', image);
     });
@@ -299,7 +299,7 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
         url: 'mapbox://ryanlittle.c0r1pyg9'
     });
     
-    map.loadImage('assets/plane-light.png', function(error, image) {
+    map.loadImage('assets/plane.png', function(error, image) {
         if (error) throw error;
         map.addImage('plane', image);
     });
@@ -335,7 +335,7 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
         url: 'mapbox://ryanlittle.5e9i7e9p'
     });
     
-    map.loadImage('assets/shotspotter-light.png', function(error, image) {
+    map.loadImage('assets/shotspotter.png', function(error, image) {
         if (error) throw error;
         map.addImage('shotspotter', image);
     });
@@ -371,7 +371,7 @@ document.getElementById('cctvToggle').addEventListener('click', function() {
         url: 'mapbox://ryanlittle.9j4nkeey'
     });
     
-    map.loadImage('assets/stingray-light.png', function(error, image) {
+    map.loadImage('assets/stingray.png', function(error, image) {
         if (error) throw error;
         map.addImage('stingray', image);
     });
